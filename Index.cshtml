@@ -1,0 +1,191 @@
+﻿@using Syncfusion.EJ2
+
+@{
+    ViewBag.PageTitle = "DIS > ITP Management";
+    ViewBag.PlatformName = "DIS";
+    ViewBag.MenuName = "ITP Master";
+    ViewBag.FunctionName = "List";
+}
+
+@section SearchSection{
+    <div class="row align-items-center m-0">
+        <div class="col ps-0">
+            <ejs-textbox id="SearchString" name="SearchString" value="@ViewBag.SearchString" cssClass="e-outline inputable" placeholder="Search Keyword...(Part, Group, Item, Inspection, Inspection Code...)"></ejs-textbox>
+        </div>
+        <div class="col-auto">
+            Period
+        </div>
+        <div class="col-2">
+            <ejs-datepicker id="StartDate" name="StartDate" value="@ViewBag.StartDate" value="@DateTime.Now.AddYears(-3).ToShortDateString()" format="yyyy-MM-dd" placeholder="Start Date..." cssClass="inputable"></ejs-datepicker>
+        </div>
+        <div class="col-2">
+            <ejs-datepicker id="EndDate" name="EndDate" value="@ViewBag.EndDate" value="@DateTime.Now.ToShortDateString()" format="yyyy-MM-dd" placeholder="End Date..." cssClass="inputable"></ejs-datepicker>
+        </div>
+        <div class="col">
+            <button id="Search" type="submit" class="btn btn-purple btn-medium rounded-pill waves-effect waves-light">Search</button>
+        </div>
+    </div>
+}
+
+@section ContentsSection{
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="ps-2 pageContentTitle">
+            <h3>@ViewBag.MenuName</h3>
+        </div>
+        <div class="ps-1">
+            <a asp-controller="DisItpMaster" asp-action="Create" id="btnPrint" class="btn btn-info btn-custom rounded-pill waves-effect waves-light">New</a>
+        </div>
+    </div>
+
+    <div>
+        <ejs-grid id="Grid" recordClick="recordClick" dataBound="dataBound"
+              height="510"
+              allowMultiSorting="true"
+              allowTextWrap="true"
+              allowResizing="true"
+              allowReordering="true"
+              allowSorting="true"
+              allowFiltering="true"
+              allowExcelExport="true"
+              allowPdfExport="true"
+              allowGrouping="true"
+              allowPaging="true"
+              showColumnChooser="true"
+              toolbar="@( new List<string>() { "ColumnChooser", "ExcelExport", "PdfExport", "CsvExport", "Print"})">
+            <e-grid-loadingIndicator indicatorType="Shimmer"></e-grid-loadingIndicator>
+            <e-data-manager url="@Url.Action("UrlDataSource", "DisItpMaster",  new {SearchString = "", StartDate = @DateTime.Now.AddYears(-3).ToShortDateString(), EndDate = @DateTime.Now.ToShortDateString()} )" adaptor="UrlAdaptor" crossdomain="true"></e-data-manager>
+            <e-grid-filterSettings type="CheckBox"></e-grid-filterSettings>
+            <e-grid-pagesettings pageCount="10" pageSize="15" pageSizes="@(new string[] {"10", "15", "20" , "50", "All" })"></e-grid-pagesettings>
+            <e-grid-groupSettings enableLazyLoading="true" allowReordering="true" showDropArea="true"></e-grid-groupSettings>
+            <e-grid-columns>
+                <e-grid-column field="NO" headerText="No" customAttributes=@(new{@class="customCss"}) textAlign="Center" width="80"></e-grid-column>
+                <e-grid-column field="CODE" headerText="Code" customAttributes=@(new{@class="customCss"}) textAlign="Center" width="150"></e-grid-column>
+                <e-grid-column field="IS_EXPANSION" template="#TemplateExpansion" headerText="Exp." customAttributes=@(new{@class="customCss"}) textAlign="Center" width="90"></e-grid-column>
+                <e-grid-column field="IS_VESSEL_TYPE_COMMON" template="#TypeTemplateCommon" headerText="Common" customAttributes=@(new{@class="customCss"}) textAlign="Center" width="130"></e-grid-column>
+                <e-grid-column field="IS_VESSEL_TYPE_A" template="#TypeTemplateTypeA" headerText="Type A" customAttributes=@(new{@class="customCss"}) textAlign="Center" width="120"></e-grid-column>
+                <e-grid-column field="IS_VESSEL_TYPE_B" template="#TypeTemplateTypeB" headerText="Type B" customAttributes=@(new{@class="customCss"}) textAlign="Center" width="120"></e-grid-column>
+                <e-grid-column field="IS_VESSEL_TYPE_C" template="#TypeTemplateTypeC" headerText="Type C" customAttributes=@(new{@class="customCss"}) textAlign="Center" width="120"></e-grid-column>
+                <e-grid-column field="IS_VESSEL_TYPE_D" template="#TypeTemplateTypeD" headerText="Type D" customAttributes=@(new{@class="customCss"}) textAlign="Center" width="120"></e-grid-column>
+                <e-grid-column field="IS_VESSEL_TYPE_E" template="#TypeTemplateTypeE" headerText="Type E" customAttributes=@(new{@class="customCss"}) textAlign="Center" width="120"></e-grid-column>
+                <e-grid-column field="PART" headerText="Part" customAttributes=@(new{@class="customCss"}) textAlign="Left" width="250"></e-grid-column>
+                <e-grid-column field="GROUP" headerText="Group" customAttributes=@(new{@class="customCss"}) textAlign="Left" width="250"></e-grid-column>
+                <e-grid-column field="ITEM" headerText="Item" customAttributes=@(new{@class="customCss"}) textAlign="Left" width="250"></e-grid-column>
+                <e-grid-column field="INSPECTION" headerText="Inspection" customAttributes=@(new{@class="customCss"}) textAlign="Left" width="450"></e-grid-column>
+                <e-grid-column field="FILE_COUNT" template="#SurveyProcedure" headerText="Survey Procedure" customAttributes=@(new{@class="customCss"}) textAlign="Center" width="200"></e-grid-column>
+                <e-grid-column field="REMARK" headerText="Remark" customAttributes=@(new{@class="customCss"}) width="400"></e-grid-column>
+                <e-grid-column field="OUT_OF_USE" template="#TemplateIsDeleted" headerText="Out of use" customAttributes=@(new{@class="customCss"}) textAlign="Center" width="150"></e-grid-column>
+                <e-grid-column field="REG_DATE" headerText="Redgistration" customAttributes=@(new{@class="customCss"}) textAlign="Center" width="150"></e-grid-column>
+            </e-grid-columns>
+        </ejs-grid>
+
+        <script id="TemplateExpansion" type="text/x-template">
+            ${if(IS_EXPANSION)}
+            <span class="e-icons e-bring-forward e-medium text-primary" title="Expansion ITP"></span>
+            ${/if}
+        </script>
+        <script id="TypeTemplateCommon" type="text/x-template">
+            ${if(IS_VESSEL_TYPE_COMMON)}
+            <span class="e-icons e-check-large text-primary" title="Common Type"></span>
+            ${/if}
+        </script>
+
+        <script id="TypeTemplateTypeA" type="text/x-template">
+            ${if(IS_VESSEL_TYPE_A)}
+            <span class="e-icons e-check-large text-primary" title="Type A"></span>
+            ${/if}
+        </script>
+
+        <script id="TypeTemplateTypeB" type="text/x-template">
+            ${if(IS_VESSEL_TYPE_B)}
+            <span class="e-icons e-check-large text-primary" title="Type B"></span>
+            ${/if}
+        </script>
+
+        <script id="TypeTemplateTypeC" type="text/x-template">
+            ${if(IS_VESSEL_TYPE_C)}
+            <span class="e-icons e-check-large text-primary" title="Type C"></span>
+            ${/if}
+        </script>
+
+        <script id="TypeTemplateTypeD" type="text/x-template">
+            ${if(IS_VESSEL_TYPE_D)}
+            <span class="e-icons e-check-large text-primary" title="Type C"></span>
+            ${/if}
+        </script>
+
+        <script id="TypeTemplateTypeE" type="text/x-template">
+            ${if(IS_VESSEL_TYPE_E)}
+            <span class="e-icons e-check-large text-primary" title="Type E"></span>
+            ${/if}
+        </script>
+
+        <script id="TemplateIsDeleted" type="text/x-template">
+            ${if(OUT_OF_USE)}
+            <span class="e-icons e-close e-large text-danger" title="Out of use"></span>
+            ${/if}
+        </script>
+
+        <script id="SurveyProcedure" type="text/x-template">
+            @*${for(file of FILE_COUNT)}
+            <span class="e-icons e-export-pdf e-large text-danger" title="Survey Procedure"></span>
+        ${/for}*@
+            ${if(FILE_COUNT > 0)}
+                <span class="e-icons e-export-pdf e-large text-danger" title="Survey Procedure"></span>
+            ${/if}
+        </script>
+    </div>
+    <script>
+        function recordClick(args) {
+            window.location.href = "/DisItpMaster/Detail/" + args.rowData.ITP_IDX;
+        }
+
+        function dataBound() {
+            var grid = document.getElementById('Grid').ej2_instances[0];
+            grid.hideScroll();
+        }
+    </script>
+}
+
+@section Scripts{
+    <script>
+        // Grid 높미 조절
+        window.onresize = () => {
+            autoHeight("Grid", 540);
+        };
+
+        window.onload = () => {
+            autoHeight("Grid", 540);
+        };
+
+        $(document).ready(function () {
+            // Search Button click 시 조회
+            $("#Search").click(function () {
+                gridRefresh("DisItpMaster", "Grid");
+            });
+
+            $("#SearchString").keyup(function () {
+                // 키 입력시 마다 조회
+                //gridRefresh()
+
+                // Enter 입력 시 조회
+                if (window.event.keyCode == 13) {
+                    gridRefresh("DisItpMaster", "Grid");
+                }
+            });
+
+            $("#StartDate").keyup(function () {
+                // Enter 입력 시 조회
+                if (window.event.keyCode == 13) {
+                    gridRefresh("DisItpMaster", "Grid");
+                }
+            });
+
+            $("#EndDate").keyup(function () {
+                // Enter 입력 시 조회
+                if (window.event.keyCode == 13) {
+                    gridRefresh("DisItpMaster", "Grid");
+                }
+            });
+        });
+    </script>
+}

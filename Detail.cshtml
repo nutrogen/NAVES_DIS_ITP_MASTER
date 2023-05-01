@@ -1,0 +1,330 @@
+﻿@using NavesPortalforWebWithCoreMvc.Common;
+@using Syncfusion.EJ2
+@using Syncfusion.EJ2.Notifications;
+@using Syncfusion.EJ2.QueryBuilder;
+@model NavesPortalforWebWithCoreMvc.Models.TNAV_DIS_ITP_MASTER
+@{
+    ViewBag.PageTitle = "DIS > ITP Master";
+    ViewBag.PlatformName = "DIS";
+    ViewBag.MenuName = "ITP Master Detail";
+    ViewBag.FunctionName = "Detail";
+}
+
+@section ContentsSection{
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="ps-2 pageContentTitle">
+            <h3>@ViewBag.MenuName</h3>
+        </div>
+        <div class="ps-1">
+        </div>
+    </div>
+
+    <form id="frmItpMaster" asp-controller="DisItpMaster" asp-action="Modify" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Code</label>
+            <div class="col-sm-4 align-self-center fw-bold">
+                <h4>
+                    @Model.CODE
+                </h4>
+                <input asp-for="CODE" class="d-none" />
+                <input asp-for="ITP_IDX" class="d-none" />
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">ITP Master Expansion</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-checkbox id="chkExpansion" checked="false" name="Expansion" label="ITP Master Expansion" change="onChange"></ejs-checkbox>
+            </div>
+            <script>
+                function onChange(args) {
+
+                    if (args.checked) {
+                        $("#divInspection").show();
+                        $("#lblInspection1").show();
+                        $("#lblInspection2").hide();
+                    }
+                    else {
+                        $("#divInspection").hide();
+                        $("#lblInspection1").hide();
+                        $("#lblInspection2").show();
+                    }
+                }
+            </script>
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Expansion</label>
+            <div class="col-sm-4 align-self-center">
+                @{
+                    if (Model.IS_EXPANSION)
+                    {
+                        <span class="e-icons e-bring-forward e-medium text-primary"></span>
+                        <span class="text-primary ps-2 align-self-center">Expanded</span>
+                    }
+                }
+                <input asp-for="IS_EXPANSION" class="d-none" />
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Part</label>
+            <div class="col-sm-4 align-self-center fw-bold">
+                @Model.PART
+                <input asp-for="PART" class="d-none" />
+                <input asp-for="PART_CODE" class="d-none" />
+            </div>
+
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Group</label>
+            <div class="col-sm-4 align-self-center fw-bold">
+                @Model.GROUP
+                <input asp-for="GROUP" class="d-none" />
+                <input asp-for="GROUP_CODE" class="d-none" />
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Item</label>
+            <div class="col-sm-4 align-self-center fw-bold">
+                @Model.ITEM
+                <input asp-for="ITEM" class="d-none" />
+                <input asp-for="ITEM_CODE" class="d-none" />
+            </div>
+        </div>
+
+        <div id="divInspection" class="mx-0 row">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">
+                <span id="lblInspection1">Inspection</span>
+            </label>
+            <div class="col-sm-10 align-self-center fw-bold">
+                <ejs-textbox type="text" id="txtInspection" ejs-for="INSPECTION" multiline="true" rows="3" cssClass="e-outline text-left inputable" placeholder="Inspection name..."></ejs-textbox>
+
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">
+                <span id="lblInspection2">Inspection</span>
+            </label>
+            <div class="col-sm-10 align-self-center">
+                @Model.INSPECTION
+                <input asp-for="INSPECTION" class="d-none" />
+                <input asp-for="INSPECTION_CODE" class="d-none" />
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Responsible</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-dropdownlist id="ddlResponsible"
+                              ejs-for="RESPONSIBLE"
+                              dataSource="@CommonSettingData.GetResponsible()"                              
+                              cssClass="inputable"
+                              placeholder="Select Responsible ...">
+                    <e-dropdownlist-fields text="Text" value="Value"></e-dropdownlist-fields>
+                </ejs-dropdownlist>
+            </div>
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Legend</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-dropdownlist id="ddlLegend"
+                              ejs-for="LEGEND"
+                              dataSource="@CommonSettingData.GetLegend()"
+                              cssClass="inputable"
+                              placeholder="Select Legend ...">
+                    <e-dropdownlist-fields text="Text" value="Value"></e-dropdownlist-fields>
+                </ejs-dropdownlist>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Document References</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-textbox type="text" id="txtDocumentReference" ejs-for="DOCUMENT_REF" cssClass="e-outline text-left inputable" placeholder="Document References ..."></ejs-textbox>
+            </div>
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">General</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-textbox type="text" id="txtGeneral" ejs-for="GENERAL" cssClass="e-outline text-left inputable" placeholder="General ..."></ejs-textbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Application Date</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-datepicker id="dpApplicationDate" ejs-for="APPLICATION_DATE" format="yyyy-MM-dd" placeholder="Application Date..." cssClass="inputable"></ejs-datepicker>
+            </div>
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Out of Use</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-checkbox id="chkOutOfUse" ejs-for="OUT_OF_USE" checked="false" label="Out of Use"></ejs-checkbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Vessel Type</label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-checkbox id="chkCommon" label="Common" ejs-for="IS_VESSEL_TYPE_COMMON" cssClass="pe-2"></ejs-checkbox>
+                <ejs-checkbox id="chkTypeA" label="Type A" ejs-for="IS_VESSEL_TYPE_A" cssClass="pe-2"></ejs-checkbox>
+                <ejs-checkbox id="chkTypeB" label="Type B" ejs-for="IS_VESSEL_TYPE_B" cssClass="pe-2"></ejs-checkbox>
+                <ejs-checkbox id="chkTypeC" label="Type C" ejs-for="IS_VESSEL_TYPE_C" cssClass="pe-2"></ejs-checkbox>
+                <ejs-checkbox id="chkTypeD" label="Type D" ejs-for="IS_VESSEL_TYPE_D" cssClass="pe-2"></ejs-checkbox>
+                <ejs-checkbox id="chkTypeE" label="Type E" ejs-for="IS_VESSEL_TYPE_E" cssClass="pe-2"></ejs-checkbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">KR NV Rule</label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-textbox type="text" id="txtNvRule" ejs-for="NV_RULE" cssClass="e-outline text-left inputable" placeholder="KR NV Rule..."></ejs-textbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">KR Rule</label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-textbox type="text" id="txtKrRule" ejs-for="KR_RULE" cssClass="e-outline text-left inputable" placeholder="KR Rule..."></ejs-textbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Convention</label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-textbox type="text" id="txtConvention" ejs-for="CONVENTION" cssClass="e-outline text-left inputable" placeholder="Convention..."></ejs-textbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Remark</label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-textbox type="text" id="txtRemark" ejs-for="REMARK" cssClass="e-outline text-left inputable" placeholder="Remark..."></ejs-textbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Survey Procedure</label>
+            <div class="col-sm-10 align-self-center py-1">
+                <div id="FileList">
+                    <partial name="~/Views/Uploader/_Pv_UploadedFileList.cshtml" model="@ViewBag.FileList" />
+                </div>
+                <div>
+                    @{
+                        var asyncSettings = new Syncfusion.EJ2.Inputs.UploaderAsyncSettings { SaveUrl = @Url.Content("~/Uploader/Save"), RemoveUrl = @Url.Content("~/Uploader/Remove"), };
+                    }
+                    <ejs-uploader id="UploadFiles" asyncSettings="@asyncSettings"
+                              autoUpload="false"
+                              multiple="true"
+                              uploading="OnFileUploading"
+                              selected="OnFileSelected"
+                              removing="OnFileRemoving"
+                              allowedExtensions="image/*, .pdf">
+                    </ejs-uploader>
+                    <script>
+                        function OnFileSelected(args) {
+                            for (var i = 0; i < args.filesData.length; i++) {
+                                args.filesData[i].name = "@Model.ITP_IDX" + "__" + "@DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")" + "__" + args.filesData[i].name;
+                            }
+                            args.isModified = true;
+                        }
+
+                        function OnFileUploading(args) {
+                            args.customFormData = [
+                                { 'PlatformName': 'DIS' },
+                                { 'CurrentDocIdx': "@Model.ITP_IDX" },
+                                { 'Type': 'ITP_MASTER' },
+                                { 'ReleatedInfo': "@String.Empty" },
+                                { 'OriginalFileName': args.fileData.id },
+                                { 'SavedFileName': args.fileData.name },
+                                { 'ProjectIdx': "@String.Empty" },
+                                { 'ProjectId': "@String.Empty" },
+                                { 'WorkIdx': "@String.Empty" },
+                                { 'WorkId': "@String.Empty" },
+                                { 'CreateUserName': "@ViewBag.CreateUser" }
+                            ];
+                        }
+
+                        function OnFileRemoving(args) {
+                            args.customFormData = [
+                                { 'PlatformName': 'DIS' },
+                                { 'CurrentDocIdx': "@Model.ITP_IDX" },
+                                { 'Type': 'ITP_MASTER' },
+                                { 'ReleatedInfo': "@String.Empty" },
+                                { 'OriginalFileName': args.filesData[0].id },
+                                { 'SavedFileName': args.filesData[0].name },
+                                { 'ProjectIdx': "@String.Empty" },
+                                { 'ProjectId': "@String.Empty" },
+                                { 'WorkIdx': "@String.Empty" },
+                                { 'WorkId': "@String.Empty" },
+                                { 'CreateUserName': "@ViewBag.CreateUser" }
+                            ];
+                        }
+                    </script>
+                </div>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom" style="height:200px;">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Description</label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-richtexteditor id="rteRemark" ejs-for="DESCRIPTION" height="192" enableResize="false">
+                    <e-richtexteditor-toolbarsettings type="Expand" enableFloating="false" items="@CommonSettingData.getBasicRichTextEditorItemLists()"></e-richtexteditor-toolbarsettings>
+                </ejs-richtexteditor>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Used Work ID</label>
+            <div class="col-sm-4 align-self-center">
+                Used Work ID Count
+            </div>
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">ITP Creator</label>
+            <div class="col-sm-4 align-self-center">
+                @Model.CREATE_USER_NAME
+                <input asp-for="CREATE_USER_NAME" class="d-none" />
+                <input asp-for="REG_DATE" class="d-none" />
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Modifed Date</label>
+            <div class="col-sm-4 align-self-center">
+                @(Model.MODIFY_DATE?.ToShortDateString() ?? "")
+            </div>
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Modifed User</label>
+            <div class="col-sm-4 align-self-center">
+                @Model.MODIFY_USER_NAME
+            </div>
+        </div>
+    </form>
+
+    <div class="pt-2 me-3">
+        <div class="float-start row g-0">
+            <div class="col-auto pe-2">
+            </div>
+            <div class="col-auto pe-2">
+            </div>
+            <div class="col-auto">
+            </div>
+        </div>
+        <div class="float-end row g-0">
+            <div class="col-auto pe-2">
+            </div>
+            <div class="col-auto pe-2">
+                <button form="frmItpMaster" asp-controller="DisItpMaster" asp-action="EditCofirm" id="btnSave" class="btn btn-primary btn-medium rounded-pill waves-effect waves-light btn-medium" type="submit">SAVE</button>
+            </div>
+            <div class="col-auto">
+                <a asp-controller="DisItpMaster" asp-action="Index" id="btnList" class="btn btn-primary btn-medium rounded-pill waves-effect waves-light btn-medium">LIST</a>
+            </div>
+        </div>
+    </div>
+        }
+
+    @section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#divInspection").hide();
+            $("#lblInspection1").hide();
+        });
+
+        // File Upload
+        $("#btnSave").click(function () {
+            var uploadObj = document.getElementById("UploadFiles").ej2_instances[0];
+            uploadObj.upload(uploadObj.getFilesData());
+        });
+    </script>
+}

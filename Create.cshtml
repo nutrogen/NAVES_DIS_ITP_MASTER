@@ -1,0 +1,362 @@
+﻿@using NavesPortalforWebWithCoreMvc.Common;
+@using Syncfusion.EJ2
+@using Syncfusion.EJ2.Notifications;
+@using Syncfusion.EJ2.QueryBuilder;
+@model NavesPortalforWebWithCoreMvc.Models.TNAV_DIS_ITP_MASTER
+@{
+    ViewBag.PageTitle = "DIS > ITP Master";
+    ViewBag.PlatformName = "DIS";
+    ViewBag.MenuName = "ITP Master NEW";
+    ViewBag.FunctionName = "New";
+}
+
+@section ContentsSection{
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="ps-2 pageContentTitle">
+            <h3>@ViewBag.MenuName</h3>
+        </div>
+        <div class="ps-1">
+        </div>
+    </div>
+
+    <form id="frmItpMaster" asp-controller="DisItpMaster" asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Code</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-textbox type="text" id="txtCode" ejs-for="CODE" cssClass="e-outline text-left" placeholder="Auto generation ITP Code ..." disabled></ejs-textbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">ITP Master Expansion</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-checkbox id="chkExpansion" ejs-for="IS_EXPANSION" checked="false" label="ITP Master Expansion" change="onChange"></ejs-checkbox>
+            </div>
+            <script>
+                function onChange(args) {
+                    if (args.checked) {
+                        $("#divInspection").show();
+                        $("#lblInspection1").show();
+                        $("#lblInspection2").hide();
+                    }
+                    else {
+                        $("#divInspection").hide();
+                        $("#lblInspection1").hide();
+                        $("#lblInspection2").show();
+                    }
+                }
+            </script>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Part</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-dropdownlist id="ddlPart"
+                              ejs-for="PART_CODE"
+                              dataSource="@ViewBag.Part"
+                              cssClass="inputable"
+                              change="PartOnChange"
+                              placeholder="Select Part...">
+                    <e-dropdownlist-fields text="PART" value="PART_CODE"></e-dropdownlist-fields>
+                </ejs-dropdownlist>
+                <script type="text/javascript">
+                    function PartOnChange() {
+                        var ddlPart = document.getElementById('ddlPart').ej2_instances[0];
+                        var ddlGroup = document.getElementById('ddlGroup').ej2_instances[0];
+                        ddlGroup.enabled = true;
+
+                        var tempQuery = new ej.data.Query().where('PART_CODE', 'equal', ddlPart.value);
+                        ddlGroup.query = tempQuery;
+                        ddlGroup.text = null;
+                        ddlGroup.dataBind();
+                    }
+                </script>
+            </div>
+
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Group</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-dropdownlist id="ddlGroup"
+                              ejs-for="GROUP_CODE"
+                              dataSource="@ViewBag.Group"
+                              cssClass="inputable"
+                              enabled="false"
+                              change="GroupOnChange"
+                              placeholder="Select Group...">
+                    <e-dropdownlist-fields text="GROUP" value="GROUP_CODE"></e-dropdownlist-fields>
+                </ejs-dropdownlist>
+                <script type="text/javascript">
+                    function GroupOnChange() {
+                        var ddlPart = document.getElementById('ddlPart').ej2_instances[0];
+                        var ddlGroup = document.getElementById('ddlGroup').ej2_instances[0];
+                        var ddlItem = document.getElementById('ddlItem').ej2_instances[0];
+                        ddlItem.enabled = true;
+
+                        var tempQuery = new ej.data.Query()
+                            .where('PART_CODE', 'equal', ddlPart.value)
+                            .where('GROUP_CODE', 'equal', ddlGroup.value);
+                        ddlItem.query = tempQuery;
+                        ddlItem.text = null;
+                        ddlItem.dataBind();
+                    }
+                </script>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Item</label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-dropdownlist id="ddlItem"
+                              ejs-for="ITEM_CODE"
+                              dataSource="@ViewBag.Item"
+                              cssClass="inputable"
+                              enabled="false"
+                              change="ItemOnChange"
+                              placeholder="Select Item...">
+                    <e-dropdownlist-fields text="ITEM" value="ITEM_CODE"></e-dropdownlist-fields>
+                </ejs-dropdownlist>
+                <script type="text/javascript">
+                    function ItemOnChange() {
+                        var ddlPart = document.getElementById('ddlPart').ej2_instances[0];
+                        var ddlGroup = document.getElementById('ddlGroup').ej2_instances[0];
+                        var ddlItem = document.getElementById('ddlItem').ej2_instances[0];
+                        var ddlInspection = document.getElementById('ddlInspection').ej2_instances[0];
+                        ddlInspection.enabled = true;
+
+                        var tempQuery = new ej.data.Query()
+                            .where('PART_CODE', 'equal', ddlPart.value)
+                            .where('GROUP_CODE', 'equal', ddlGroup.value)
+                            .where('ITEM_CODE', 'equal', ddlItem.value);
+                        ddlInspection.query = tempQuery;
+                        ddlInspection.text = null;
+                        ddlInspection.dataBind();
+                    }
+                </script>
+            </div>
+
+        </div>
+
+        <div id="divInspection" class="mx-0 row">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">
+                <span id="lblInspection1">Inspection</span>
+            </label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-dropdownlist id="ddlInspection"
+                              ejs-for="INSPECTION_CODE"
+                              dataSource="@ViewBag.Inspection"
+                              enabled="false"
+                              cssClass="inputable"
+                              placeholder="Select Inspection..."
+                              change="OnChangeInspection">
+                    <e-dropdownlist-fields text="INSPECTION_DESC" value="INSPECTION_CODE"></e-dropdownlist-fields>
+                </ejs-dropdownlist>
+            </div>
+            <script>
+                function OnChangeInspection(args) {                    
+                    $("#txtInspection").val("");
+                    $("#txtInspection").val(args.itemData.INSPECTION);
+                }
+            </script>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">
+                <span id="lblInspection2">Inspection</span>
+            </label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-textbox type="text" id="txtInspection" ejs-for="INSPECTION" cssClass="e-outline text-left inputable" rows="3" placeholder="Inspection name..."></ejs-textbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Responsible</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-dropdownlist id="ddlResponsible"
+                              ejs-for="RESPONSIBLE"
+                              dataSource="@CommonSettingData.GetResponsible()"                              
+                              cssClass="inputable"
+                              placeholder="Select Responsible ...">
+                    <e-dropdownlist-fields text="Text" value="Value"></e-dropdownlist-fields>
+                </ejs-dropdownlist>
+            </div>
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Legend</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-dropdownlist id="ddlLegend"
+                              ejs-for="LEGEND"
+                              dataSource="@CommonSettingData.GetLegend()"
+                              cssClass="inputable"
+                              placeholder="Select Legend ...">
+                    <e-dropdownlist-fields text="Text" value="Value"></e-dropdownlist-fields>
+                </ejs-dropdownlist>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Document References</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-textbox type="text" id="txtDocumentReference" ejs-for="DOCUMENT_REF" cssClass="e-outline text-left inputable" placeholder="Document References ..."></ejs-textbox>
+            </div>
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">General</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-textbox type="text" id="txtGeneral" ejs-for="GENERAL" cssClass="e-outline text-left inputable" placeholder="General ..."></ejs-textbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Application Date</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-datepicker id="dpApplicationDate" ejs-for="APPLICATION_DATE" format="yyyy-MM-dd" placeholder="Application Date..." cssClass="inputable"></ejs-datepicker>
+            </div>
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Out of Use</label>
+            <div class="col-sm-4 align-self-center">
+                <ejs-checkbox id="chkOutOfUse" ejs-for="OUT_OF_USE" checked="false" label="Out of Use"></ejs-checkbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Type</label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-checkbox id="chkCommon" checked="true" label="Common" ejs-for="IS_VESSEL_TYPE_COMMON" cssClass="pe-2"></ejs-checkbox>
+                <ejs-checkbox id="chkTypeA" checked="false" label="Type A" ejs-for="IS_VESSEL_TYPE_A" cssClass="pe-2"></ejs-checkbox>
+                <ejs-checkbox id="chkTypeB" checked="false" label="Type B" ejs-for="IS_VESSEL_TYPE_B" cssClass="pe-2"></ejs-checkbox>
+                <ejs-checkbox id="chkTypeC" checked="false" label="Type C" ejs-for="IS_VESSEL_TYPE_C" cssClass="pe-2"></ejs-checkbox>
+                <ejs-checkbox id="chkTypeD" checked="false" label="Type D" ejs-for="IS_VESSEL_TYPE_D" cssClass="pe-2"></ejs-checkbox>
+                <ejs-checkbox id="chkTypeE" checked="false" label="Type E" ejs-for="IS_VESSEL_TYPE_E" cssClass="pe-2"></ejs-checkbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">KR NV Rule</label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-textbox type="text" id="txtNvRule" ejs-for="NV_RULE" cssClass="e-outline text-left inputable" placeholder="KR NV Rule..."></ejs-textbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">KR Rule</label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-textbox type="text" id="txtKrRule" ejs-for="KR_RULE" cssClass="e-outline text-left inputable" placeholder="KR Rule..."></ejs-textbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Convention</label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-textbox type="text" id="txtConvention" ejs-for="CONVENTION" cssClass="e-outline text-left inputable" placeholder="Convention..."></ejs-textbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Remark</label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-textbox type="text" id="txtRemark" ejs-for="REMARK" cssClass="e-outline text-left inputable" placeholder="Remark..."></ejs-textbox>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Survey Procedure</label>
+            <div class="col-sm-10 align-self-center py-1">
+                <input type="text" asp-for="ITP_IDX" value="@ViewBag.CurrentIdx" class="d-none" />
+                @{
+                    var asyncSettings = new Syncfusion.EJ2.Inputs.UploaderAsyncSettings { SaveUrl = @Url.Content("~/Uploader/Save"), RemoveUrl = @Url.Content("~/Uploader/Remove"), };
+                }
+                <ejs-uploader id="UploadFiles" asyncSettings="@asyncSettings"
+                          autoUpload="false"
+                          multiple="true"
+                          uploading="OnFileUploading"
+                          selected="OnFileSelected"
+                          removing="OnFileRemoving"
+                          allowedExtensions="image/*, .pdf">
+                </ejs-uploader>
+                <script>
+                    function OnFileSelected(args) {
+                        for (var i = 0; i < args.filesData.length; i++) {
+                            args.filesData[i].name = "@ViewBag.CurrentIdx" + "__" + "@DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")" + "__" + args.filesData[i].name;
+                        }
+                        args.isModified = true;
+                    }
+
+                    function OnFileUploading(args) {
+                        args.customFormData = [
+                            { 'PlatformName': 'DIS' },
+                            { 'CurrentDocIdx': "@ViewBag.CurrentIdx" },
+                            { 'Type': 'ITP_MASTER' },
+                            { 'ReleatedInfo': "@String.Empty" },
+                            { 'OriginalFileName': args.fileData.id },
+                            { 'SavedFileName': args.fileData.name },
+                            { 'ProjectIdx': "@String.Empty" },
+                            { 'ProjectId': "@String.Empty" },
+                            { 'WorkIdx': "@String.Empty" },
+                            { 'WorkId': "@String.Empty" },
+                            { 'CreateUserName': "@ViewBag.CreateUser" }
+                        ];
+                    }
+
+                    function OnFileRemoving(args) {
+                        args.customFormData = [
+                            { 'PlatformName': 'DIS' },
+                            { 'CurrentDocIdx': "@ViewBag.CurrentIdx" },
+                            { 'Type': 'ITP_MASTER' },
+                            { 'ReleatedInfo': "@String.Empty" },
+                            { 'OriginalFileName': args.filesData[0].id },
+                            { 'SavedFileName': args.filesData[0].name },
+                            { 'ProjectIdx': "@String.Empty" },
+                            { 'ProjectId': "@String.Empty" },
+                            { 'WorkIdx': "@String.Empty" },
+                            { 'WorkId': "@String.Empty" },
+                            { 'CreateUserName': "@ViewBag.CreateUser" }
+                        ];
+                    }
+                </script>
+            </div>
+        </div>
+
+        <div class="mx-0 row bprder border-bottom" style="height:200px;">
+            <label class="col-sm-2 col-form-label text-end fw-bolder bg-create-title">Description</label>
+            <div class="col-sm-10 align-self-center">
+                <ejs-richtexteditor id="rteRemark" ejs-for="DESCRIPTION" height="192" enableResize="false">
+                    <e-richtexteditor-toolbarsettings type="Expand" enableFloating="false" items="@CommonSettingData.getBasicRichTextEditorItemLists()"></e-richtexteditor-toolbarsettings>
+                </ejs-richtexteditor>
+            </div>
+        </div>
+    </form>
+    <div class="pt-2 me-3">
+        <div class="float-start row g-0">
+            <div class="col-auto pe-2">
+            </div>
+            <div class="col-auto pe-2">
+            </div>
+            <div class="col-auto">
+            </div>
+        </div>
+        <div class="float-end row g-0">
+            <div class="col-auto pe-2">
+            </div>
+            <div class="col-auto pe-2">
+                <button form="frmItpMaster" asp-controller="DisItpMaster" asp-action="Create" id="btnSave" class="btn btn-primary btn-medium rounded-pill waves-effect waves-light btn-medium" type="submit">SAVE</button>
+            </div>
+            <div class="col-auto">
+                <a asp-controller="DisItpMaster" asp-action="Index" id="btnList" class="btn btn-primary btn-medium rounded-pill waves-effect waves-light btn-medium">LIST</a>
+            </div>
+        </div>
+    </div>
+
+}
+
+    @section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#divInspection").hide();
+            $("#lblInspection1").hide();
+
+            // Default value set common vessel type
+            document.getElementById('chkCommon').ej2_instances[0].checked = true;
+        });
+
+        // File Upload
+        $("#btnSave").click(function () {
+            var uploadObj = document.getElementById("UploadFiles").ej2_instances[0];
+            uploadObj.upload(uploadObj.getFilesData());
+        });
+    </script>
+}
